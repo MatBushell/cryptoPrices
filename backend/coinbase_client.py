@@ -17,7 +17,7 @@ subscribe_message = {
 # Def the listener function
 async def websocket_listener(on_ticker_update):
     message = json.dumps(subscribe_message)
-
+    
     while True:
         try:
             async with websockets.connect(WS_URL, ping_interval=None) as websocket:
@@ -34,8 +34,13 @@ async def websocket_listener(on_ticker_update):
             await asyncio.sleep(1)
 
 if __name__ == '__main__':
+    async def on_ticker_update(data):
+        print(data.get("product_id"), data.get("price"))
+        
+        # print(json.dumps(data))
+
     try:
-        asyncio.run(websocket_listener())
+        asyncio.run(websocket_listener(on_ticker_update))
     except KeyboardInterrupt:
         print("Exiting WebSocket..")
 
